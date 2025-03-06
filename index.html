@@ -6,7 +6,7 @@
     <title>Birthday Surprise</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Lora', serif;
             color: #333;
             display: flex;
             flex-direction: column;
@@ -16,60 +16,53 @@
             margin: 0;
             overflow: hidden;
             position: relative;
-        }
-
-        /* Video Background */
-        #videoBg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
+            background: #fff1de url('Files/bgphoto.jpg') no-repeat center center/contain;
         }
 
         .container {
             text-align: center;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
             z-index: 1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: #ff6699;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-family: 'Playfair Display', serif;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
         }
 
         #startButton {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            background-color: #ff6699;
+            padding: 15px 35px;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #ff6699, #ff3385);
             color: #fff;
             border: none;
-            border-radius: 10px; /* Square corners */
+            border-radius: 12px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        #startButton:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
+            transition: all 0.3s ease;
+            font-family: 'Lora', serif;
+            box-shadow: 0 4px 15px rgba(255, 102, 153, 0.4);
         }
 
         #startButton:hover:not(:disabled) {
-            background-color: #ff3385;
             transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 102, 153, 0.6);
         }
 
-        #countdown {
-            font-size: 1.5rem;
-            margin-top: 20px;
-            color: #ff6699;
+        #startButton:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        #startButton:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         .modal {
@@ -79,51 +72,121 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             justify-content: center;
             align-items: center;
             z-index: 2;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 550px;
+            backdrop-filter: blur(5px);
+            position: relative;
         }
 
         .modal-content h2 {
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-bottom: 20px;
+            color: #ff6699;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .modal-content p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #444;
+            font-family: 'Lora', serif;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .modal-content button {
-            padding: 10px 20px;
-            margin: 5px;
+            padding: 12px 25px;
+            margin: 8px;
             border: none;
-            border-radius: 10px; /* Square corners */
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-family: 'Lora', serif;
         }
 
         .modal-content button.yes {
-            background-color: #ff6699;
+            background: linear-gradient(135deg, #ff6699, #ff3385);
             color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 102, 153, 0.4);
         }
 
         .modal-content button.no {
-            background-color: #ccc;
-            color: #333;
+            background: #e0e0e0;
+            color: #555;
+        }
+
+        .modal-content button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content button:active {
+            transform: scale(0.95);
+        }
+
+        #finalModal .modal-content {
+            padding: 0;
+        }
+
+        #finalModal img {
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            margin-top: 0;
+        }
+
+        #finalModal .overlay-text {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        #finalModal .overlay-text h2 {
+            margin: 0 0 10px;
+            font-size: 1.8rem;
+        }
+
+        #finalModal .overlay-text p {
+            margin: 0;
+            font-size: 1.1rem;
         }
 
         .happy-birthday {
             position: absolute;
             top: -50px;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             color: #ff6699;
             animation: fall linear infinite;
+            font-family: 'Playfair Display', serif;
         }
 
         @keyframes fall {
@@ -133,9 +196,9 @@
 
         .confetti {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: #ff6699;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, #ff6699, #ff3385);
             animation: confetti-fall 2s linear infinite;
         }
 
@@ -146,42 +209,42 @@
 
         .heart {
             position: absolute;
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #ff6699;
             animation: float 5s linear infinite;
         }
 
         @keyframes float {
             0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+            50% { transform: translateY(-25px) rotate(180deg); }
             100% { transform: translateY(0) rotate(360deg); }
         }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            #startButton { font-size: 1.1rem; padding: 12px 25px; }
+            .modal-content { padding: 25px; width: 90%; }
+            .modal-content h2 { font-size: 1.6rem; }
+            .modal-content p { font-size: 1rem; }
+            #finalModal .overlay-text h2 { font-size: 1.4rem; }
+            #finalModal .overlay-text p { font-size: 0.9rem; }
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lora&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Video Background -->
-    <video id="videoBg" autoplay loop muted>
-        <source src="Files/THE_VIDEO_BG.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
     <div class="container">
         <h1 id="ageCounter">🎉 Your Age: Loading... 🎉</h1>
-        <button id="startButton" disabled>Click here, my girl</button>
-        <div id="countdown"></div>
+        <button id="startButton" disabled>You can click me in: Loading...</button>
     </div>
 
-    <!-- Audio for sound effects -->
     <audio id="clickSound">
         <source src="https://assets.mixkit.co/active_storage/sfx/3007/3007-preview.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
-    <audio id="happyBirthdaySong">
-        <source src="https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-piano-1186.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
+    <audio id="happyBirthdaySong" loop>
+        <source src="Files/bdmusic.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Modal for the first question -->
     <div id="question1Modal" class="modal">
         <div class="modal-content">
             <h2>Hey girl, are you Rayan Sahari?</h2>
@@ -190,16 +253,14 @@
         </div>
     </div>
 
-    <!-- Modal for password input -->
     <div id="passwordModal" class="modal">
         <div class="modal-content">
-            <h2>Enter the password:</h2>
+            <h2>In case you don’t know the password, it’s your favorite fruit:</h2>
             <input type="text" id="passwordInput" placeholder="Password">
             <button onclick="checkPassword()">Submit</button>
         </div>
     </div>
 
-    <!-- Modals for the questions -->
     <div id="question2Modal" class="modal">
         <div class="modal-content">
             <h2>Are you 20 now?</h2>
@@ -224,7 +285,6 @@
         </div>
     </div>
 
-    <!-- Updated questions (general and happiness-focused) -->
     <div id="question5Modal" class="modal">
         <div class="modal-content">
             <h2>Are you excited for your 20s?</h2>
@@ -348,91 +408,87 @@
     <div id="question20Modal" class="modal">
         <div class="modal-content">
             <h2>Do you promise to stay happy and positive?</h2>
-            <button class="yes" onclick="showFinalMessage()">Yes</button>
+            <button class="yes" onclick="showLetter()">Yes</button>
             <button class="no" onclick="tryAgain()">No</button>
         </div>
     </div>
 
-    <!-- Modal for the final message -->
+    <div id="letterModal" class="modal">
+        <div class="modal-content">
+            <h2>My Dearest Rayan,</h2>
+            <p id="letterText1"></p>
+            <p id="letterText2"></p>
+            <label><input type="checkbox" id="forgiveCheckbox"> I forgive you</label>
+            <button onclick="checkForgiveness()">Next</button>
+        </div>
+    </div>
+
     <div id="finalModal" class="modal">
         <div class="modal-content">
-            <h2>🎂 Happiest Birthday ever to you, my lady! 🎉 I love you so much! I hope you loved this cute idea I made for you and only for you. Remember, everything will be fine! 💖</h2>
+            <img src="Files/spcphoto.jpg" alt="Special Photo">
+            <div class="overlay-text">
+                <h2>🎂 Happiest Birthday ever to you, my lady! 🎉</h2>
+                <p>I love you so much! I hope you loved this cute idea I made for you and only for you. Remember, everything will be fine! 💖</p>
+            </div>
             <button onclick="closeModal()">Close</button>
         </div>
     </div>
 
     <script>
-        // Set the target date and time (March 9, 2025, 12:00 AM)
-        const targetDate = new Date('2025-03-09T00:00:00');
+        window.onload = function () {
+            startAgeCounter();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        };
 
-        // Function to update the countdown
+        const targetDate = new Date('2025-03-09T00:00:00');
+        const startButton = document.getElementById('startButton');
+
         function updateCountdown() {
             const now = new Date();
             const diff = targetDate - now;
 
             if (diff <= 0) {
-                // Enable the button if the target time is reached
-                document.getElementById('startButton').disabled = false;
-                document.getElementById('countdown').textContent = "Button is now clickable!";
+                startButton.textContent = "Click Me!";
+                startButton.disabled = false;
                 return;
             }
 
-            // Calculate time components
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            // Display the countdown
-            document.getElementById('countdown').textContent = `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            startButton.textContent = `You can click me in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            startButton.disabled = true;
         }
 
-        // Check the countdown every second
-        setInterval(updateCountdown, 1000);
-        updateCountdown(); // Initial call
-
-        // Start the live age counter as soon as the page loads
-        window.onload = function () {
-            startAgeCounter();
-        };
-
-        // Function to start the falling "Happy Birthday" messages and questions
-        document.getElementById('startButton').addEventListener('click', function () {
-            // Play click sound
-            const clickSound = document.getElementById('clickSound');
-            clickSound.play();
-
-            startFallingMessages();
-            createHearts();
-            setTimeout(() => {
-                document.getElementById('question1Modal').style.display = 'flex';
-            }, 3000); // Start questions after 3 seconds
+        startButton.addEventListener('click', function () {
+            if (!startButton.disabled) {
+                document.getElementById('clickSound').play();
+                document.getElementById('happyBirthdaySong').play();
+                startFallingMessages();
+                createHearts();
+                setTimeout(() => {
+                    document.getElementById('question1Modal').style.display = 'flex';
+                }, 3000);
+            }
         });
 
-        // Function to create falling "Happy Birthday" messages
         function startFallingMessages() {
             const messages = ["🎉 Happy Birthday!", "🎂 Enjoy your day!", "💖 You're amazing!", "🎈 Let's celebrate!", "🌸 Best wishes!", "🎁 You deserve the best!"];
             const interval = setInterval(() => {
                 const message = document.createElement('div');
                 message.className = 'happy-birthday';
                 message.textContent = messages[Math.floor(Math.random() * messages.length)];
-                message.style.left = `${Math.random() * 100}vw`; // Random horizontal position
-                message.style.animationDuration = `${Math.random() * 3 + 2}s`; // Random speed
+                message.style.left = `${Math.random() * 100}vw`;
+                message.style.animationDuration = `${Math.random() * 3 + 2}s`;
                 document.body.appendChild(message);
-
-                // Remove the message after it falls
-                setTimeout(() => {
-                    message.remove();
-                }, 5000);
-            }, 500); // Create a new message every 500ms
-
-            // Stop falling messages after 3 seconds
-            setTimeout(() => {
-                clearInterval(interval);
-            }, 3000);
+                setTimeout(() => message.remove(), 5000);
+            }, 500);
+            setTimeout(() => clearInterval(interval), 3000);
         }
 
-        // Function to create floating hearts
         function createHearts() {
             for (let i = 0; i < 20; i++) {
                 const heart = document.createElement('div');
@@ -441,15 +497,10 @@
                 heart.style.left = `${Math.random() * 100}vw`;
                 heart.style.animationDuration = `${Math.random() * 3 + 2}s`;
                 document.body.appendChild(heart);
-
-                // Remove the heart after it floats
-                setTimeout(() => {
-                    heart.remove();
-                }, 5000);
+                setTimeout(() => heart.remove(), 5000);
             }
         }
 
-        // Function to create confetti effect
         function createConfetti() {
             for (let i = 0; i < 100; i++) {
                 const confetti = document.createElement('div');
@@ -457,33 +508,28 @@
                 confetti.style.left = `${Math.random() * 100}vw`;
                 confetti.style.animationDuration = `${Math.random() * 2 + 1}s`;
                 document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000);
             }
         }
 
-        // Function to calculate and display her exact age
         function startAgeCounter() {
-            const birthDate = new Date('2005-03-09T19:00:00'); // March 9, 2005, 7:00 PM
+            const birthDate = new Date('2005-03-09T19:00:00');
             const ageCounter = document.getElementById('ageCounter');
-
             function updateAge() {
                 const now = new Date();
                 const diff = now - birthDate;
-
                 const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
                 const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
                 const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                ageCounter.innerHTML = `🎉 Your Age: ${years} years, ${Math.floor(months)} months, ${Math.floor(days)} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                ageCounter.innerHTML = `🎉 Your Age: ${years}y ${months}m ${days}d ${hours}h ${minutes}m ${seconds}s`;
             }
-
             setInterval(updateAge, 1000);
             updateAge();
         }
 
-        // Functions to navigate through the questions
         function askPassword() {
             document.getElementById('question1Modal').style.display = 'none';
             document.getElementById('passwordModal').style.display = 'flex';
@@ -491,7 +537,7 @@
 
         function checkPassword() {
             const password = document.getElementById('passwordInput').value;
-            if (password === "ilyes") {
+            if (password === "dela3") {
                 document.getElementById('passwordModal').style.display = 'none';
                 document.getElementById('question2Modal').style.display = 'flex';
             } else {
@@ -589,47 +635,58 @@
             document.getElementById('question20Modal').style.display = 'flex';
         }
 
-        // Function to show the final message
-        function showFinalMessage() {
+        function showLetter() {
             document.getElementById('question20Modal').style.display = 'none';
-            document.getElementById('finalModal').style.display = 'flex';
-            createConfetti();
-
-            // Play Happy Birthday song
-            const happyBirthdaySong = document.getElementById('happyBirthdaySong');
-            happyBirthdaySong.play();
+            document.getElementById('letterModal').style.display = 'flex';
+            typeLetter();
         }
 
-        // Function to close the modal
+        function typeLetter() {
+            const text1 = "I want to take a moment to apologize for my behavior lately. I know I haven't been the best, and I'm truly sorry if I've hurt you or made you feel unappreciated. You mean the world to me, and I promise to do better and make you feel loved every single day.";
+            const text2 = "Thank you for being patient with me and for always being there. I love you more than words can express, and I hope this little surprise brings a smile to your face.";
+            const letterText1 = document.getElementById('letterText1');
+            const letterText2 = document.getElementById('letterText2');
+            let index1 = 0;
+            let index2 = 0;
+
+            function type() {
+                if (index1 < text1.length) {
+                    letterText1.textContent += text1.charAt(index1);
+                    index1++;
+                    setTimeout(type, 7000 / text1.length);
+                } else if (index2 < text2.length) {
+                    letterText2.textContent += text2.charAt(index2);
+                    index2++;
+                    setTimeout(type, 7000 / text2.length);
+                }
+            }
+            letterText1.textContent = '';
+            letterText2.textContent = '';
+            type();
+        }
+
+        function checkForgiveness() {
+            if (document.getElementById('forgiveCheckbox').checked) {
+                showFinalMessage();
+            } else {
+                alert("Please forgive me first!");
+            }
+        }
+
+        function showFinalMessage() {
+            document.getElementById('letterModal').style.display = 'none';
+            document.getElementById('finalModal').style.display = 'flex';
+            createConfetti();
+        }
+
         function closeModal() {
             document.getElementById('finalModal').style.display = 'none';
         }
 
-        // Function to handle "No" answers
         function tryAgain() {
             alert("Come on girl, try again for daddy, will ya?");
+            document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
             document.getElementById('question1Modal').style.display = 'flex';
-            document.getElementById('passwordModal').style.display = 'none';
-            document.getElementById('question2Modal').style.display = 'none';
-            document.getElementById('question3Modal').style.display = 'none';
-            document.getElementById('question4Modal').style.display = 'none';
-            document.getElementById('question5Modal').style.display = 'none';
-            document.getElementById('question6Modal').style.display = 'none';
-            document.getElementById('question7Modal').style.display = 'none';
-            document.getElementById('question8Modal').style.display = 'none';
-            document.getElementById('question9Modal').style.display = 'none';
-            document.getElementById('question10Modal').style.display = 'none';
-            document.getElementById('question11Modal').style.display = 'none';
-            document.getElementById('question12Modal').style.display = 'none';
-            document.getElementById('question13Modal').style.display = 'none';
-            document.getElementById('question14Modal').style.display = 'none';
-            document.getElementById('question15Modal').style.display = 'none';
-            document.getElementById('question16Modal').style.display = 'none';
-            document.getElementById('question17Modal').style.display = 'none';
-            document.getElementById('question18Modal').style.display = 'none';
-            document.getElementById('question19Modal').style.display = 'none';
-            document.getElementById('question20Modal').style.display = 'none';
-            document.getElementById('finalModal').style.display = 'none';
         }
     </script>
 </body>
