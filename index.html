@@ -48,6 +48,7 @@
             transition: all 0.3s ease;
             font-family: 'Lora', serif;
             box-shadow: 0 4px 15px rgba(255, 102, 153, 0.4);
+            margin: 10px;
         }
 
         #startButton:hover:not(:disabled) {
@@ -63,6 +64,14 @@
             background: #ccc;
             cursor: not-allowed;
             box-shadow: none;
+        }
+
+        #postCelebrationMessage {
+            font-size: 1.5rem;
+            color: #ff6699;
+            margin-top: 10px;
+            font-family: 'Playfair Display', serif;
+            display: none;
         }
 
         .modal {
@@ -148,26 +157,51 @@
             transform: scale(0.95);
         }
 
+        #wishModal .modal-content {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 60px;
+        }
+
+        #wishModal h2 {
+            font-size: 2.5rem;
+            color: #ff3385;
+            opacity: 0;
+            animation: fadeInText 1s ease-in forwards, shake 0.5s infinite alternate;
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(-5px); }
+            100% { transform: translateX(5px); }
+        }
+
         #finalModal .modal-content {
             padding: 0;
         }
 
         #finalModal img {
             width: 100%;
-            border-radius: 20px 20px 0 0;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
             margin-top: 0;
         }
 
         #finalModal .overlay-text {
             position: absolute;
-            top: 20px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
             width: 80%;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.65);
             padding: 20px;
             border-radius: 15px;
             backdrop-filter: blur(5px);
+            text-align: center;
         }
 
         #finalModal .overlay-text h2 {
@@ -176,8 +210,29 @@
         }
 
         #finalModal .overlay-text p {
-            margin: 0;
+            margin: 0 0 10px;
             font-size: 1.1rem;
+        }
+
+        #progressBarContainer {
+            width: 80%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        #progressBar {
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6699, #ff3385);
+            animation: loadProgress 15s linear forwards;
+        }
+
+        @keyframes loadProgress {
+            from { width: 0; }
+            to { width: 100%; }
         }
 
         .happy-birthday {
@@ -228,6 +283,8 @@
             .modal-content p { font-size: 1rem; }
             #finalModal .overlay-text h2 { font-size: 1.4rem; }
             #finalModal .overlay-text p { font-size: 0.9rem; }
+            #wishModal h2 { font-size: 2rem; }
+            #postCelebrationMessage { font-size: 1.2rem; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lora&display=swap" rel="stylesheet">
@@ -235,7 +292,8 @@
 <body>
     <div class="container">
         <h1 id="ageCounter">🎉 Your Age: Loading... 🎉</h1>
-        <button id="startButton" disabled>You can click me in: Loading...</button>
+        <div id="postCelebrationMessage">I will see you next year my girl, and I promise you we will be happier 💖</div>
+        <button id="startButton">Loading...</button>
     </div>
 
     <audio id="clickSound">
@@ -423,12 +481,21 @@
         </div>
     </div>
 
+    <div id="wishModal" class="modal">
+        <div class="modal-content">
+            <h2>Good girl, now shh... Make a wish! ✨</h2>
+        </div>
+    </div>
+
     <div id="finalModal" class="modal">
         <div class="modal-content">
             <img src="Files/spcphoto.jpg" alt="Special Photo">
             <div class="overlay-text">
                 <h2>🎂 Happiest Birthday ever to you, my lady! 🎉</h2>
-                <p>I love you so much! I hope you loved this cute idea I made for you and only for you. Remember, everything will be fine! 💖</p>
+                <p>I love you so much! I hope you loved this cute idea I made for you. Wishing you all the joy in the world! 💖</p>
+                <div id="progressBarContainer">
+                    <div id="progressBar"></div>
+                </div>
             </div>
             <button onclick="closeModal()">Close</button>
         </div>
@@ -441,37 +508,66 @@
             setInterval(updateCountdown, 1000);
         };
 
-        const targetDate = new Date('2025-03-09T00:00:00');
+        const birthDate = new Date('2005-03-09T00:00:00'); // Rayan's birthdate
+        const targetBirthday2025 = new Date('2025-03-09T00:00:00'); // Target birthday (tomorrow midnight)
+        const endOfBirthday2025 = new Date('2025-03-10T00:00:00'); // End of March 9, 2025
+        const nextTargetDate = new Date('2026-03-09T00:00:00'); // Next birthday
         const startButton = document.getElementById('startButton');
+        const postCelebrationMessage = document.getElementById('postCelebrationMessage');
+        const happyBirthdaySong = document.getElementById('happyBirthdaySong');
 
         function updateCountdown() {
             const now = new Date();
-            const diff = targetDate - now;
+            const diffToBirthday = targetBirthday2025 - now;
+            const lastCelebrationYear = localStorage.getItem('lastCelebrationYear');
 
-            if (diff <= 0) {
+            // Before March 9, 2025 midnight: show countdown on button
+            if (diffToBirthday > 0) {
+                const days = Math.floor(diffToBirthday / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diffToBirthday % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diffToBirthday % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diffToBirthday % (1000 * 60)) / 1000);
+                startButton.textContent = `Wait: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                startButton.disabled = true;
+            }
+            // During March 9, 2025, and not yet celebrated: enable button
+            else if (now >= targetBirthday2025 && now < endOfBirthday2025 && lastCelebrationYear !== '2025') {
                 startButton.textContent = "Click Me!";
                 startButton.disabled = false;
-                return;
             }
+            // After celebration or after March 9, 2025: lock until next year
+            else {
+                startButton.textContent = "See You Next Year!";
+                startButton.disabled = true;
+                postCelebrationMessage.style.display = 'block';
+            }
+        }
 
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        function triggerCelebration() {
+            document.getElementById('clickSound').play();
+            happyBirthdaySong.play(); // Start music
+            startFallingMessages();
+            createHearts();
+            setTimeout(() => {
+                document.getElementById('question1Modal').style.display = 'flex';
+            }, 3000);
 
-            startButton.textContent = `You can click me in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-            startButton.disabled = true;
+            // Stop music at the end of March 9 every year
+            const now = new Date();
+            const year = now.getFullYear();
+            const endOfBirthday = new Date(`${year}-03-10T00:00:00`);
+            if (now >= new Date(`${year}-03-09T00:00:00`) && now < endOfBirthday) {
+                setTimeout(() => {
+                    happyBirthdaySong.pause();
+                    happyBirthdaySong.currentTime = 0;
+                }, endOfBirthday - now);
+            }
         }
 
         startButton.addEventListener('click', function () {
-            if (!startButton.disabled) {
-                document.getElementById('clickSound').play();
-                document.getElementById('happyBirthdaySong').play();
-                startFallingMessages();
-                createHearts();
-                setTimeout(() => {
-                    document.getElementById('question1Modal').style.display = 'flex';
-                }, 3000);
+            const now = new Date();
+            if (now >= targetBirthday2025 && now < endOfBirthday2025 && localStorage.getItem('lastCelebrationYear') !== '2025') {
+                triggerCelebration();
             }
         });
 
@@ -513,18 +609,27 @@
         }
 
         function startAgeCounter() {
-            const birthDate = new Date('2005-03-09T19:00:00');
             const ageCounter = document.getElementById('ageCounter');
+
             function updateAge() {
                 const now = new Date();
                 const diff = now - birthDate;
                 const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-                const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
-                const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                ageCounter.innerHTML = `🎉 Your Age: ${years}y ${months}m ${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+                if (now >= targetBirthday2025) {
+                    // After or on March 9, 2025 midnight, show exact years
+                    ageCounter.innerHTML = `🎉 Your Age: ${years} years 🎉`;
+                } else {
+                    // Before March 9, 2025 midnight, force 29 days for March 8
+                    const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
+                    const daysRemaining = Math.floor((targetBirthday2025 - now) / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    // Hack to show 29 days on March 8 for display
+                    const displayDays = (now.getDate() === 8 && now.getMonth() === 2 && now.getFullYear() === 2025) ? 29 : daysRemaining;
+                    ageCounter.innerHTML = `🎉 Your Age: ${years}y ${months}m ${displayDays}d ${hours}h ${minutes}m ${seconds}s 🎉`;
+                }
             }
             setInterval(updateAge, 1000);
             updateAge();
@@ -667,20 +772,33 @@
 
         function checkForgiveness() {
             if (document.getElementById('forgiveCheckbox').checked) {
-                showFinalMessage();
+                document.getElementById('letterModal').style.display = 'none';
+                document.getElementById('wishModal').style.display = 'flex';
+                setTimeout(showFinalMessage, 4500); // 4.5 seconds
             } else {
                 alert("Please forgive me first!");
             }
         }
 
         function showFinalMessage() {
-            document.getElementById('letterModal').style.display = 'none';
+            document.getElementById('wishModal').style.display = 'none';
             document.getElementById('finalModal').style.display = 'flex';
             createConfetti();
+            setTimeout(closeModalAndLock, 15000); // 15 seconds
+        }
+
+        function closeModalAndLock() {
+            document.getElementById('finalModal').style.display = 'none';
+            happyBirthdaySong.pause();
+            happyBirthdaySong.currentTime = 0;
+            const now = new Date();
+            localStorage.setItem('lastCelebrationYear', now.getFullYear().toString());
+            postCelebrationMessage.style.display = 'block';
+            updateCountdown();
         }
 
         function closeModal() {
-            document.getElementById('finalModal').style.display = 'none';
+            closeModalAndLock();
         }
 
         function tryAgain() {
